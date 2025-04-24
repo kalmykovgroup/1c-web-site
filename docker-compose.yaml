@@ -1,0 +1,37 @@
+services:
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${API_PORT}"
+    networks:
+      - public # Для связи с nginx \
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:${API_PORT}
+    
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: ./Dockerfile
+    container_name: nginx
+    restart: unless-stopped
+    ports: 
+      - "80:80" # Apache внутри server теперь отдаёт Web-клиент
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # основной конфиг 
+      - ./nginx/conf.d/:/etc/nginx/conf.d/        # конфиги для виртуальных хостов
+      - ./nginx/stream.d/:/etc/nginx/stream.d/    # конфиги для stream 
+      - ./nginx/templates/:/etc/nginx/templates    # конфиги для stream  
+    environment:
+      - API_PORT=${API_PORT} 
+    networks:
+      - public # Для связи с server 
+    depends_on:
+      - api   
+     
+networks:
+  public:
+    driver: bridge  # Обычная сеть для nginx 
