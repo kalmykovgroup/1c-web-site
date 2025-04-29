@@ -9,6 +9,6 @@ public class LoginController : ControllerBase
     
     public IActionResult Get()
     {
-        return Ok("Hello World");
+        return Ok("Login endpoint");
     }
 }

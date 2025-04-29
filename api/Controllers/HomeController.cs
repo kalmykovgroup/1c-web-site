@@ -1,6 +1,14 @@
-namespace api.Controllers;
+using Microsoft.AspNetCore.Mvc;
 
-public class HomeController
+namespace api.Controllers;
+ 
+[ApiController]
+[Route("[controller]")]
+public class HomeController : ControllerBase
 {
     
+    public IActionResult Get()
+    {
+        return Ok("Hello World");
+    }
 }
